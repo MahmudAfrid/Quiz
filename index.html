@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medicine Ward Final Exam Practice Quiz</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col justify-between">
+
+  <!-- Header -->
+  <header class="bg-indigo-700 text-white shadow-md">
+    <div class="max-w-4xl mx-auto px-4 py-6 flex justify-between items-center">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight">Medicine Ward Final Exam</h1>
+        <p class="text-indigo-200 text-sm mt-1">Short Cases & Clinical Signs Practice Quiz</p>
+      </div>
+      <div id="score-badge" class="bg-indigo-800 px-4 py-2 rounded-lg text-sm font-semibold hidden">
+        Score: <span id="current-score">0</span> / <span id="total-questions">0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-4xl mx-auto px-4 py-8 flex-grow w-full">
+
+    <!-- Start Card -->
+    <div id="start-card" class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center max-w-2xl mx-auto">
+      <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <h2 class="text-2xl font-bold text-slate-900 mb-2">Ready to test your bedside clinical knowledge?</h2>
+      <p class="text-slate-600 mb-6">
+        This quiz covers high-yield physical examination findings, bedside sign interpretation, and classic viva questions for CVS, Respiratory, Abdomen, and Neurology short cases.
+      </p>
+      <button onclick="startQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-3 rounded-lg shadow transition duration-200">
+        Start Quiz
+      </button>
+    </div>
+
+    <!-- Quiz Card -->
+    <div id="quiz-card" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 md:p-8 hidden">
+      <!-- Progress Bar -->
+      <div class="mb-6">
+        <div class="flex justify-between text-xs font-semibold text-slate-500 mb-2">
+          <span id="question-tracker">Question 1 of 8</span>
+          <span id="category-tag" class="text-indigo-600 font-medium">Cardiovascular System</span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-2">
+          <div id="progress-bar" class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Question Text -->
+      <h3 id="question-text" class="text-lg md:text-xl font-semibold text-slate-900 mb-6">
+        Question text goes here
+      </h3>
+
+      <!-- Answer Options -->
+      <div id="options-container" class="space-y-3 mb-6">
+        <!-- Options generated dynamically -->
+      </div>
+
+      <!-- Explanation Box -->
+      <div id="explanation-box" class="hidden p-4 rounded-lg bg-slate-50 border border-slate-200 mb-6">
+        <h4 class="font-semibold text-slate-900 text-sm mb-1 flex items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          Clinical Explanation
+        </h4>
+        <p id="explanation-text" class="text-sm text-slate-600 leading-relaxed"></p>
+      </div>
+
+      <!-- Footer Buttons -->
+      <div class="flex justify-end border-t border-slate-100 pt-4">
+        <button id="next-btn" onclick="nextQuestion()" disabled class="bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white font-medium px-5 py-2.5 rounded-lg transition duration-200">
+          Next Question
+        </button>
+      </div>
+    </div>
+
+    <!-- Results Card -->
+    <div id="results-card" class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 text-center max-w-2xl mx-auto hidden">
+      <div class="w-20 h-20 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+      </div>
+      <h2 class="text-2xl font-bold text-slate-900 mb-2">Quiz Completed!</h2>
+      <p class="text-slate-600 mb-6">Here is your performance summary for the Medicine Ward Short Cases practice quiz:</p>
+      
+      <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-6 inline-block w-full max-w-xs">
+        <div class="text-4xl font-extrabold text-indigo-600 mb-1" id="final-score">0 / 0</div>
+        <div class="text-xs font-semibold text-slate-500 uppercase tracking-wider" id="score-percentage">0% Correct</div>
+      </div>
+
+      <p id="performance-feedback" class="text-sm font-medium text-slate-700 mb-6"></p>
+
+      <button onclick="restartQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium px-6 py-3 rounded-lg shadow transition duration-200">
+        Retake Quiz
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
+    Medicine Ward Final Examination Preparation &bull; Clinical Signs & Short Cases Quiz
+  </footer>
+
+  <script>
+    const quizData = [
+      {
+        category: "Cardiovascular System",
+        question: "During auscultation of a patient with suspected mitral stenosis, which finding is most indicative of SEVERE mitral valve stenosis?",
+        options: [
+          "Presence of a pre-systolic accentuation murmur",
+          "A shortened $A_2\\text{--}\\text{Opening Snap (OS)}$ interval",
+          "Soft $S_1$ heart sound with a Grade 2/6 murmur",
+          "Radiation of the mid-diastolic murmur to the axilla"
+        ],
+        correct: 1,
+        explanation: "A shorter $A_2\\text{--}OS$ interval indicates higher left atrial pressure forcing the stiff mitral valve open earlier in diastole, which correlates directly with greater severity of mitral stenosis."
+      },
+      {
+        category: "Cardiovascular System",
+        question: "Which peripheral physical sign in aortic regurgitation is characterized by head nodding in rhythm with the heartbeat?",
+        options: [
+          "Corrigan's sign",
+          "Quincke's sign",
+          "De Musset's sign",
+          "Traube's sign"
+        ],
+        correct: 2,
+        explanation: "De Musset's sign is rhythmic head nodding synchronous with the pulse, caused by large stroke volume and hyperdynamic arterial pulsations in severe aortic regurgitation."
+      },
+      {
+        category: "Respiratory System",
+        question: "According to Light's Criteria, which of the following pleural fluid laboratory parameters defines an EXUDATIVE pleural effusion?",
+        options: [
+          "Pleural fluid to serum protein ratio < 0.5",
+          "Pleural fluid LDH < 200 IU/L",
+          "Pleural fluid to serum LDH ratio > 0.6",
+          "Serum to pleural fluid albumin gradient > 1.2 g/dL"
+        ],
+        correct: 2,
+        explanation: "By Light's criteria, an effusion is exudative if it meets ANY of these: (1) Pleural/Serum Protein > 0.5, (2) Pleural/Serum LDH > 0.6, or (3) Pleural LDH > 2/3 upper limit of normal serum LDH."
+      },
+      {
+        category: "Respiratory System",
+        question: "Which set of bedside physical signs differentiates lobar consolidation from a large pleural effusion?",
+        options: [
+          "Stony dull percussion, absent vocal fremitus, and absent breath sounds",
+          "Dull percussion, increased tactile fremitus, and bronchial breath sounds",
+          "Hyperresonant percussion, decreased tactile fremitus, and wheezing",
+          "Resonant percussion, reduced expansion, and vesicular breath sounds with prolonged expiration"
+        ],
+        correct: 1,
+        explanation: "Consolidation conducts sound through solid tissue, causing dull percussion, INCREASED tactile fremitus/vocal resonance, and bronchial breath sounds. Effusion blocks sound, causing stony dullness and ABSENT fremitus/breath sounds."
+      },
+      {
+        category: "Abdominal & Hepatobiliary",
+        question: "What is the primary pathophysiological mechanism responsible for spider nevi and gynecomastia in chronic liver disease?",
+        options: [
+          "Increased hepatic degradation of circulating androgens",
+          "Portal hypertension leading to systemic venous congestion",
+          "Impaired hepatic clearance and clearance failure of circulating estrogens",
+          "Hypoalbuminemia reducing bound serum steroid hormone levels"
+        ],
+        correct: 2,
+        explanation: "Hyperestrogenism in chronic liver disease occurs primarily due to impaired hepatic metabolism and clearance of estrogens, leading to arteriolar dilation (spider nevi) and breast tissue growth (gynecomastia)."
+      },
+      {
+        category: "Abdominal & Hepatobiliary",
+        question: "Which feature on physical examination best distinguishes an enlarged spleen from an enlarged left kidney?",
+        options: [
+          "The organ is bimanually palpable and ballottable",
+          "Presence of a palpable notch on the anterior border and dullness to percussion",
+          "Ability to descend under the left costal margin ('get above the mass')",
+          "Resonant percussion note over the anterior prominence of the mass"
+        ],
+        correct: 1,
+        explanation: "The spleen has a distinct splenic notch, moves inferomedially on inspiration, is dull to percussion, and you CANNOT get above it. A kidney is ballottable, resonant (overlying bowel), and lacks a notch."
+      },
+      {
+        category: "Neurology System",
+        question: "A patient presents with right-sided hemiplegia. Which combination of signs indicates an Upper Motor Neuron (UMN) lesion?",
+        options: [
+          "Hypotonia, absent deep tendon reflexes, fasciculations, and flexor plantar response",
+          "Spastic hypertonia, hyperreflexia, presence of clonus, and extensor plantar response",
+          "Flaccid tone, brisk reflexes, marked early muscle atrophy, and absent Babinski sign",
+          "Normal tone, absent reflexes, diminished sensation, and sensory ataxia"
+        ],
+        correct: 1,
+        explanation: "UMN lesions lead to loss of descending inhibition, resulting in spasticity (clasp-knife hypertonia), brisk hyperreflexia, clonus, and an extensor plantar response (Babinski sign)."
+      },
+      {
+        category: "Neurology System",
+        question: "How is the Babinski sign elicited correctly during a routine neurological examination?",
+        options: [
+          "Firmly tapping the Achilles tendon with a reflex hammer while flexing the hip",
+          "Squeezing the calf muscle firmly while observing toe movement",
+          "Stroking the lateral border of the sole of the foot from the heel forward towards the little toe, then medially across the ball of the foot",
+          "Stroking the inner aspect of the thigh and observing cremasteric contraction"
+        ],
+        correct: 2,
+        explanation: "The plantar reflex (Babinski) is elicited by firmly stroking the lateral sole from the heel up toward the small toe and across the metatarsal heads. An extensor response (dorsiflexion of big toe, fanning of outer toes) indicates UMN dysfunction."
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedOptionIndex = null;
+
+    function startQuiz() {
+      document.getElementById('start-card').classList.add('hidden');
+      document.getElementById('quiz-card').classList.remove('hidden');
+      document.getElementById('score-badge').classList.remove('hidden');
+      document.getElementById('total-questions').textContent = quizData.length;
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      const currentData = quizData[currentQuestionIndex];
+      selectedOptionIndex = null;
+
+      // Update Header & Progress
+      document.getElementById('question-tracker').textContent = `Question ${currentQuestionIndex + 1} of ${quizData.length}`;
+      document.getElementById('category-tag').textContent = currentData.category;
+      document.getElementById('progress-bar').style.width = `${((currentQuestionIndex + 1) / quizData.length) * 100}%`;
+      document.getElementById('current-score').textContent = score;
+
+      // Question & Explanation Reset
+      document.getElementById('question-text').textContent = currentData.question;
+      document.getElementById('explanation-box').classList.add('hidden');
+      
+      const nextBtn = document.getElementById('next-btn');
+      nextBtn.disabled = true;
+      nextBtn.textContent = (currentQuestionIndex === quizData.length - 1) ? "Finish Quiz" : "Next Question";
+
+      // Render Options
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+
+      currentData.options.forEach((option, index) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left p-4 rounded-lg border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition duration-150 flex items-start space-x-3 text-slate-800 text-sm font-medium";
+        btn.onclick = () => selectOption(index);
+        
+        const letter = String.fromCharCode(65 + index);
+        btn.innerHTML = `
+          <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 text-slate-600 text-xs font-bold flex-shrink-0 mt-0.5">${letter}</span>
+          <span class="flex-grow">${option}</span>
+        `;
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    function selectOption(index) {
+      if (selectedOptionIndex !== null) return; // Prevent changing answer
+      selectedOptionIndex = index;
+
+      const currentData = quizData[currentQuestionIndex];
+      const optionsContainer = document.getElementById('options-container');
+      const buttons = optionsContainer.children;
+
+      if (index === currentData.correct) {
+        score++;
+        document.getElementById('current-score').textContent = score;
+        buttons[index].classList.remove('border-slate-200', 'hover:border-indigo-300', 'hover:bg-indigo-50/50');
+        buttons[index].classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-900');
+        buttons[index].querySelector('span').classList.replace('bg-slate-100', 'bg-emerald-200');
+        buttons[index].querySelector('span').classList.add('text-emerald-800');
+      } else {
+        buttons[index].classList.remove('border-slate-200', 'hover:border-indigo-300', 'hover:bg-indigo-50/50');
+        buttons[index].classList.add('bg-rose-50', 'border-rose-500', 'text-rose-900');
+        buttons[index].querySelector('span').classList.replace('bg-slate-100', 'bg-rose-200');
+        buttons[index].querySelector('span').classList.add('text-rose-800');
+
+        // Highlight correct answer
+        buttons[currentData.correct].classList.remove('border-slate-200');
+        buttons[currentData.correct].classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-900');
+      }
+
+      // Show explanation
+      document.getElementById('explanation-text').textContent = currentData.explanation;
+      document.getElementById('explanation-box').classList.remove('hidden');
+
+      // Enable next button
+      document.getElementById('next-btn').disabled = false;
+    }
+
+    function nextQuestion() {
+      if (currentQuestionIndex < quizData.length - 1) {
+        currentQuestionIndex++;
+        loadQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      document.getElementById('quiz-card').classList.add('hidden');
+      document.getElementById('results-card').classList.remove('hidden');
+
+      const percentage = Math.round((score / quizData.length) * 100);
+      document.getElementById('final-score').textContent = `${score} / ${quizData.length}`;
+      document.getElementById('score-percentage').textContent = `${percentage}% Score`;
+
+      let feedback = "";
+      if (percentage >= 85) {
+        feedback = "Outstanding! You have a solid grasp of physical examination signs and short case viva concepts.";
+      } else if (percentage >= 65) {
+        feedback = "Good performance! Review the explanations for missed questions to sharpen your bedside viva responses.";
+      } else {
+        feedback = "Keep reviewing! Focus on physical signs and differential diagnoses across CVS, Respiratory, Abdominal, and Neurology short cases.";
+      }
+      document.getElementById('performance-feedback').textContent = feedback;
+    }
+
+    function restartQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      document.getElementById('results-card').classList.add('hidden');
+      startQuiz();
+    }
+  </script>
+</body>
+</html>
